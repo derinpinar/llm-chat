@@ -1,2 +1,7 @@
 fastapi
 uvicorn[standard]
+langchain
+langchain_community
+streamlit
+streamlit_chat
+langchain-openai
