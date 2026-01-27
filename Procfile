@@ -1,1 +1,1 @@
-streamlit run chat.py --server.port=10000 --server.address=0.0.0.0
+web: uvicorn endpoint.main:app --host 0.0.0.0 --port $PORT
