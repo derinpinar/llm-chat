@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from os.path import join, dirname
 
 # Load environment variables
-dotenv_path = join(dirname(dirname(__file__)), '.env')
+dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 from ask_ai import main as ask_ai_main
@@ -97,4 +97,3 @@ async def ask_ai_endpoint(request_body: AskAIRequest, request: Request):
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "version": "1.0.0"}
-

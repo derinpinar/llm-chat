@@ -1,5 +1,4 @@
 import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from datetime import datetime, timedelta
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import InMemoryChatMessageHistory
@@ -12,28 +11,28 @@ import json
 import requests
 import warnings
 from os.path import join, dirname
-import logging
+#import logging
 import pickle
 import pandas as pd
 
 
-logger = logging.getLogger('ASK-AI')
-logger.setLevel(logging.INFO)
-today_ymd = datetime.today().strftime('%Y-%m-%d')
-file_handler = logging.FileHandler(f"../chat_{today_ymd}.log")
-file_handler.setLevel(logging.INFO)
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-
-logging.getLogger().setLevel(logging.WARNING)
+# logger = logging.getLogger('ASK-AI')
+# logger.setLevel(logging.INFO)
+# today_ymd = datetime.today().strftime('%Y-%m-%d')
+# file_handler = logging.FileHandler(f"chat_{today_ymd}.log")
+# file_handler.setLevel(logging.INFO)
+#
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# file_handler.setFormatter(formatter)
+# logger.addHandler(file_handler)
+# console_handler = logging.StreamHandler()
+# console_handler.setFormatter(formatter)
+# logger.addHandler(console_handler)
+#
+# logging.getLogger().setLevel(logging.WARNING)
 
 warnings.filterwarnings("ignore")
-dotenv_path = join(dirname(dirname(__file__)), '.env')
+dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 store = {}  # memory chain dışında tutulmalı saatlik temizleniyor ilerde redis e geçilebilir.
@@ -246,8 +245,8 @@ def analyst_model_prediction(analyst, coin_pair, position, activation_time):
     
     try:
         # Load model and feature columns
-        model_path = join(dirname(dirname(__file__)), 'xgboost_model.pkl')
-        features_path = join(dirname(dirname(__file__)), 'feature_columns.pkl')
+        model_path = join(dirname(__file__), 'xgboost_model.pkl')
+        features_path = join(dirname(__file__), 'feature_columns.pkl')
         
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
@@ -373,10 +372,3 @@ def main(headers, item):
     response, session_data = start_session(session_id, is_new_session, prompt, context)
 
     return ResponseModel(response, session_data['session_id'], session_data['is_new_session']).to_json()
-
-
-# from types import SimpleNamespace
-# headers = {'connection': 'Keep-Alive', 'content-type': 'application/json', 'accept': 'application/json, text/plain, */*', 'accept-encoding': 'gzip, br', 'accept-language': 'tr', 'timezoneid':'Istanbul'}
-# items = {'SessionId': 'a28cf45c-c35b-439b-8395-dc4ef0cbdc34', 'Prompt': None, 'CoinPair': 'ETHUSDT', 'Analyst': 'FLASHH', 'ActivationDate': '2026-01-19 01:22:00','Position':'long', 'IsNewSession':False}
-# items_ns = SimpleNamespace(**items)
-# print(main(headers, items_ns))
