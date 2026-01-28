@@ -323,7 +323,7 @@ def analyst_model_prediction(analyst, coin_pair, position, activation_time):
         }
         
     except Exception as e:
-        logger.error(f"Model prediction error: {str(e)}")
+        #logger.error(f"Model prediction error: {str(e)}")
         return {
             'success': False,
             'error': str(e),
@@ -366,9 +366,15 @@ def main(headers, item):
         print('Not Validated')
 
     coin_glass_info = check_coin_pair_exists(coin_pair)
-    analyst_result = analyst_model_prediction(analyst, coin_pair, position, activation_time)
-    context = select_context_prompt()
-    prompt = generate_user_prompt(analyst, coin_pair, position, analyst_result, coin_glass_info, user_prompt)
-    response, session_data = start_session(session_id, is_new_session, prompt, context)
 
-    return ResponseModel(response, session_data['session_id'], session_data['is_new_session']).to_json()
+    if coin_glass_info:
+        analyst_result = analyst_model_prediction(analyst, coin_pair, position, activation_time)
+        context = select_context_prompt()
+        prompt = generate_user_prompt(analyst, coin_pair, position, analyst_result, coin_glass_info, user_prompt)
+        response, session_data = start_session(session_id, is_new_session, prompt, context)
+        return ResponseModel(response, session_data['session_id'], session_data['is_new_session']).to_json()
+    else:
+        response= 'There is no sufficient information for analysis and review.'
+        return ResponseModel(response, None, False).to_json()
+
+
